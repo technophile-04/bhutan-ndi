@@ -77,6 +77,19 @@ export async function GET() {
 
     const proofData = await proofRes.json();
 
+    // 5. Subscribe to webhook notifications
+    await fetch("https://demo-client.bhutanndi.com/webhook/v1/subscribe", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${accessToken}`,
+      },
+      body: JSON.stringify({
+        webhookId: process.env.WEBHOOK_ID,
+        threadId: proofData.data.proofRequestThreadId,
+      }),
+    });
+
     // ✅ Return QR code URL instead of deep link
     return NextResponse.json({ url: proofData.data.proofRequestURL });
   } catch (err) {
